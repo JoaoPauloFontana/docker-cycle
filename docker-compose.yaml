@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  node-app:
+    build: ./app
+    container_name: node-app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=fullcycle
+      - MYSQL_PORT=3311
+    depends_on:
+      - mysql
+    networks:
+      - fullcycle
+    
+  nginx:
+    image: nginx:latest
+    restart: always
+    build:
+      context: ./nginx
+    container_name: nginx
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8080:80"
+    depends_on:
+      - node-app
+    networks:
+      - fullcycle
+
+  mysql:
+    container_name: "mysql"
+    image: mysql:5.7
+    platform: linux/x86_64
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'fullcycle'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - "3311:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - fullcycle
+
+networks:
+  fullcycle:
+    driver: bridge
+
+volumes:
+  mysql-data:
