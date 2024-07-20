@@ -14,7 +14,8 @@ services:
       - MYSQL_DATABASE=fullcycle
       - MYSQL_PORT=3311
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - fullcycle
     
@@ -45,6 +46,11 @@ services:
       - "3311:3306"
     volumes:
       - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "host.docker.internal", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
     networks:
       - fullcycle
 
