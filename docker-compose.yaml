@@ -11,11 +11,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - MYSQL_HOST=host.docker.internal
+      - MYSQL_HOST=mysql
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
       - MYSQL_DATABASE=fullcycle
-      - MYSQL_PORT=3311
+      - MYSQL_PORT=3306
     depends_on:
       mysql:
         condition: service_healthy
@@ -46,7 +46,7 @@ services:
       MYSQL_DATABASE: 'fullcycle'
       MYSQL_ROOT_PASSWORD: 'root'
     ports:
-      - "3311:3306"
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
